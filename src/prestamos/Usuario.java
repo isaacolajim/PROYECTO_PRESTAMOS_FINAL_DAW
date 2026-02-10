@@ -1,6 +1,8 @@
+package prestamos;
+
 import java.time.LocalDate;
 
-public class Usuario extends Excepciones{
+public class Usuario extends Excepciones {
     private String nombre;
     private String email;
     private String numeroSocio;
@@ -30,15 +32,17 @@ public class Usuario extends Excepciones{
     }
 
     public boolean estaSancionado(){
-        if (sancionado && fechaFinSancion != null && LocalDate.now().isAfter(fechaFinSancion)) {
+        if ( fechaFinSancion!=null && LocalDate.now().isAfter(fechaFinSancion)){
             return false;
         }
+
         return sancionado;
     }
 
     @Override
     public String toString(){
-        return "";
+        return "Nombre: "+this.nombre+" Email: "+this.email+" Número de Socio: "+this.numeroSocio+
+                " Fecha de registro: "+this.fechaRegistro;
     }
 
 }
