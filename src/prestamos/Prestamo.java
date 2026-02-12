@@ -34,12 +34,28 @@ public class Prestamo extends Excepciones {
 
     }
 
+    public void setFechaDevolucionReal(LocalDate fechaDevolucionReal) {
+        this.fechaDevolucionReal = fechaDevolucionReal;
+    }
+
+    public LocalDate getFechaPrestamo() {
+        return fechaPrestamo;
+    }
+
     public String getCodigoLibro() {
         return codigoLibro;
     }
 
     public LocalDate getFechaDevolucionReal() {
         return fechaDevolucionReal;
+    }
+
+    public LocalDate getFechaDevolucionPrevista() {
+        return fechaDevolucionPrevista;
+    }
+
+    public Usuario getSocio (){
+        return socio;
     }
 
     public void registrarDevolucion(LocalDate devolucion)throws PrestamoInvalidoException{

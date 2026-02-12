@@ -1,6 +1,7 @@
 package prestamos;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class GestorBiblioteca extends Excepciones {
     private static  final int MAX_USUARIOS = 50;
@@ -51,8 +52,41 @@ public class GestorBiblioteca extends Excepciones {
         return prestamo;
     }
 
-    /*public boolean devolverLibro(String codigoLibro, LocalDate fechaDevolucion){
+    public boolean devolverLibro(String codigoLibro, LocalDate fechaDevolucion)throws PrestamoInvalidoException {
+        for(int i=0; i<prestamos.length;i++){
+            if(prestamos[i].getCodigoLibro().matches(codigoLibro)&& prestamos[i].getFechaDevolucionReal()==null){
+                if(fechaDevolucion.isBefore(prestamos[i].getFechaPrestamo())){
+                    throw new PrestamoInvalidoException("LA FECHA DE DEVOLUCION NO PUEDE SER ANTERIOR A LA DEL PRESTAMO");
+                }
+            }
+            prestamos[i].setFechaDevolucionReal(fechaDevolucion);
+            if (fechaDevolucion.isAfter(prestamos[i].getFechaDevolucionPrevista())) {
+                long retraso = ChronoUnit.DAYS.between(prestamos[i].getFechaDevolucionPrevista(),fechaDevolucion);
+                prestamos[i].getSocio().sancionar((int)retraso);
+            }
+            return true;
+        }
+        return false;
+    }
 
-    }*/
+    public Usuario buscarUsuario(String numeroSocio) {
+        for (int i = 0; i < usuarios.length; i++) {
+            if (usuarios[i] != null && usuarios[i].getNumeroSocio().equals(numeroSocio)) {
+                return usuarios[i];
+            }
+        }
+        return null;
+    }
 
+    public Prestamo getPrestamos() {
+        return prestamos[numeroPrestamos];
+    }
+
+    public Usuario getUsuarios() {
+        return usuarios[numeroUsuarios];
+    }
+
+    public String toString(){
+        return " PRESTAMOS"+this.getPrestamos()+"Usuarios"+this.getUsuarios();
+    }
 }

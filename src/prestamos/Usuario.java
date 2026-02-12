@@ -8,6 +8,7 @@ public class Usuario extends Excepciones {
     private String numeroSocio;
     private LocalDate fechaRegistro;
     private boolean sancionado;
+    private int diasSancion;
     private LocalDate fechaFinSancion;
 
     public Usuario(String nombre, String email, String numeroSocio, LocalDate fechaRegistro)throws UsuarioInvalidoException{
@@ -17,14 +18,25 @@ public class Usuario extends Excepciones {
         if (numeroSocio == null || !numeroSocio.matches("^SOC\\d{5}$")) {
             throw new UsuarioInvalidoException("Número de socio inválido El formato debe ser: SOC00000");
         }
-
+        if(nombre==null){
+            throw new UsuarioInvalidoException("No has introducido el nombre");
+        }
+        if(fechaRegistro==null){
+            throw new UsuarioInvalidoException("No has introducido la fecha de registro");
+        }
         this.nombre=nombre;
         this.email=email;
         this.numeroSocio=numeroSocio;
         this.fechaRegistro=fechaRegistro;
     }
-    public void sancionar(){
+
+    public String getNumeroSocio() {
+        return numeroSocio;
+    }
+
+    public void sancionar(int dias){
         this.sancionado =true;
+        this.diasSancion +=dias;
     }
 
     public void levantarSancion(){
