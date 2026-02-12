@@ -33,6 +33,15 @@ public class Prestamo extends Excepciones {
         this.fechaDevolucionPrevista = fechaPrestamo.plusDays(14);
 
     }
+
+    public String getCodigoLibro() {
+        return codigoLibro;
+    }
+
+    public LocalDate getFechaDevolucionReal() {
+        return fechaDevolucionReal;
+    }
+
     public void registrarDevolucion(LocalDate devolucion)throws PrestamoInvalidoException{
         if(devolucion==null||devolucion.isBefore(LocalDate.now())){
             throw new PrestamoInvalidoException("NO ES POSIBLE REALIZAR " +
