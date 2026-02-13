@@ -24,7 +24,7 @@ public class MainPrestamos {
                 resp = Integer.parseInt(in.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Error: Debes introducir un número.");
-                resp = 0; // Para que repita el bucle
+                resp = 0;
             }
             switch (resp){
                 case 1:
@@ -49,8 +49,38 @@ public class MainPrestamos {
                     }
                     break;
                 case 2:
+                    try{
+                        System.out.println("Codigo libro (LIB0000): ");
+                        String codigolibro = in.nextLine();
+                        System.out.println("Titulo: ");
+                        String titulo = in.nextLine();
+                        System.out.println("Numero socio: ");
+                        String numsocio = in.nextLine();
+                        System.out.println("Fecha de prestamo: ");
+                        LocalDate fechaPrestamo = LocalDate.parse(in.nextLine(), formatoFecha);
+                        Usuario uprestamo=gestor.buscarUsuario(numsocio);
+                        Prestamo p = gestor.realizarPrestamo(codigolibro,titulo,uprestamo,fechaPrestamo);
+                        System.out.println("Prestamo realizado");
+                        System.out.println("Devolucion prevista: "+p.getFechaDevolucionPrevista().format(formatoFecha));
+                    }
+                    catch (DateTimeParseException e) {
+                        System.out.println("Error: Formato de fecha incorrecto. Usa dd/mm/aaaa");
+                    }
+                    catch (Exception e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 3:
+                    /*try {
+                        System.out.println("Codigo libro (LIB0000): ");
+                        String codigolibro = in.nextLine();
+                        System.out.println("Fecha devolucion: ");
+                        LocalDate fechadevolucion = LocalDate.parse(in.nextLine(), formatoFecha);
+                        boolean devolucion = gestor.devolverLibro(codigolibro,fechadevolucion);
+                        if(fechadevolucion){
+
+                        }
+                    }*/
                     break;
                 case 4:
                     break;
@@ -61,6 +91,8 @@ public class MainPrestamos {
                 case 7:
                     break;
                 case 8:
+                    System.out.println("SALIENDO..............");
+                    break;
 
             }
         }
