@@ -71,22 +71,49 @@ public class MainPrestamos {
                     }
                     break;
                 case 3:
-                    /*try {
+                    try {
                         System.out.println("Codigo libro (LIB0000): ");
                         String codigolibro = in.nextLine();
                         System.out.println("Fecha devolucion: ");
                         LocalDate fechadevolucion = LocalDate.parse(in.nextLine(), formatoFecha);
                         boolean devolucion = gestor.devolverLibro(codigolibro,fechadevolucion);
-                        if(fechadevolucion){
-
+                        if(devolucion){
+                            System.out.println("Devolucion registrada");
                         }
-                    }*/
+                    }
+                    catch (DateTimeParseException e) {
+                        System.out.println("Error: Formato de fecha incorrecto. Usa dd/mm/aaaa");
+                    }
+                    catch (Exception e){
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 4:
+                    System.out.print("Introduce número de socio: ");
+                    String numsocio = in.nextLine();
+                    Usuario encontrado = gestor.buscarUsuario(numsocio);
+                    if (encontrado != null) {
+                        System.out.println(encontrado);
+                    } else {
+                        System.out.println("Usuario no encontrado.");
+                    }
                     break;
                 case 5:
-                    break;
+                    Prestamo[] lista = { gestor.getPrestamos() };
+                    boolean prestamos = false;
+
+                    for(int i = 0; i < lista.length; i++){
+                        Prestamo p = lista[i];
+                        if(p != null && p.getFechaDevolucionReal() == null){
+                            prestamos = true;
+                        }
+                    }
+                    if(!prestamos){
+                        System.out.println("no hay prestamos");
+                    }
+                        break;
                 case 6:
+
                     break;
                 case 7:
                     break;

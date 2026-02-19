@@ -1,6 +1,7 @@
 package prestamos;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class GestorBiblioteca extends Excepciones {
@@ -52,23 +53,32 @@ public class GestorBiblioteca extends Excepciones {
         return prestamo;
     }
 
-    public boolean devolverLibro(String codigoLibro, LocalDate fechaDevolucion)throws PrestamoInvalidoException {
+    public boolean devolverLibro(String codigoLibro, LocalDate fechaDevolucion) throws PrestamoInvalidoException {
         for(int i=0; i<prestamos.length;i++){
-            if(prestamos[i].getCodigoLibro().matches(codigoLibro)&& prestamos[i].getFechaDevolucionReal()==null){
+            if(prestamos[i] != null && prestamos[i].getCodigoLibro().matches(codigoLibro) && prestamos[i].getFechaDevolucionReal()==null){
+
                 if(fechaDevolucion.isBefore(prestamos[i].getFechaPrestamo())){
                     throw new PrestamoInvalidoException("LA FECHA DE DEVOLUCION NO PUEDE SER ANTERIOR A LA DEL PRESTAMO");
                 }
+
+                prestamos[i].setFechaDevolucionReal(fechaDevolucion);
+
+                if (fechaDevolucion.isAfter(prestamos[i].getFechaDevolucionPrevista())) {
+                    long retraso = ChronoUnit.DAYS.between(prestamos[i].getFechaDevolucionPrevista(),fechaDevolucion);
+                    prestamos[i].getSocio().sancionar((int)retraso);
+
+                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaFin = prestamos[i].getSocio().getFechaFinSancion().format(fmt);
+
+                    System.out.println("Devolución registrada con " + retraso + " días de retraso");
+                    System.out.println("Usuario sancionado por " + retraso + " días (hasta el " + fechaFin + ")");
+                }
+
+                return true;
             }
-            prestamos[i].setFechaDevolucionReal(fechaDevolucion);
-            if (fechaDevolucion.isAfter(prestamos[i].getFechaDevolucionPrevista())) {
-                long retraso = ChronoUnit.DAYS.between(prestamos[i].getFechaDevolucionPrevista(),fechaDevolucion);
-                prestamos[i].getSocio().sancionar((int)retraso);
-            }
-            return true;
         }
         return false;
     }
-
     public Usuario buscarUsuario(String numeroSocio) {
         for (int i = 0; i < usuarios.length; i++) {
             if (usuarios[i] != null && usuarios[i].getNumeroSocio().equals(numeroSocio)) {
