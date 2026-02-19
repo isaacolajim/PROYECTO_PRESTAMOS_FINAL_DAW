@@ -80,6 +80,9 @@ public class MainPrestamos {
                         if(devolucion){
                             System.out.println("Devolucion registrada");
                         }
+                        //else if(fechadevolucion.isAfter()){
+
+                        //}
                     }
                     catch (DateTimeParseException e) {
                         System.out.println("Error: Formato de fecha incorrecto. Usa dd/mm/aaaa");
@@ -101,7 +104,6 @@ public class MainPrestamos {
                 case 5:
                     Prestamo[] lista = { gestor.getPrestamos() };
                     boolean prestamos = false;
-
                     for(int i = 0; i < lista.length; i++){
                         Prestamo p = lista[i];
                         if(p != null && p.getFechaDevolucionReal() == null){
@@ -113,9 +115,21 @@ public class MainPrestamos {
                     }
                         break;
                 case 6:
-
+                    Usuario[] usuario = {gestor.getUsuarios()};
+                    boolean sancion = false;
+                    for(int i=0; i< usuario.length;i++){
+                        Usuario u= usuario[i];
+                        if(u!=null && u.estaSancionado()){
+                            System.out.println(u);
+                            sancion =true;
+                        }
+                    }
+                    if(!sancion){
+                        System.out.println("no hay usuarios sancionados");
+                    }
                     break;
                 case 7:
+                    gestor.actualizarSanciones();
                     break;
                 case 8:
                     System.out.println("SALIENDO..............");
@@ -124,8 +138,6 @@ public class MainPrestamos {
             }
         }
         while (resp!=8);
-
-
 
     }
 }

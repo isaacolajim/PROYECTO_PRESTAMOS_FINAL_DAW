@@ -13,10 +13,10 @@ public class GestorBiblioteca extends Excepciones {
     private int numeroPrestamos;
 
     public GestorBiblioteca(){
-        Usuario[] usuarios = new Usuario[MAX_USUARIOS];
-        Prestamo[] prestamos = new Prestamo[MAX_PRESTAMOS];
-        numeroUsuarios = 0;
-        numeroPrestamos = 0;
+        this.usuarios= new Usuario[MAX_USUARIOS];
+        this.prestamos = new Prestamo[MAX_PRESTAMOS];
+        this.numeroUsuarios = 0;
+        this.numeroPrestamos = 0;
     }
 
     public void registrarUsuario(Usuario usuario)throws UsuarioRepetidoException {
@@ -44,8 +44,8 @@ public class GestorBiblioteca extends Excepciones {
             throw  new UsuarioSancionadoException("ESTE USUARIO ESTA SANCIONADO");
         }
 
-        for(int i = 0; i<prestamos.length; i++){
-            if(prestamos[i].getCodigoLibro().matches(codigoLibro) && prestamos[i].getFechaDevolucionReal()==null){
+        for(int i = 0; i<numeroPrestamos; i++){
+            if(prestamos[i] != null && prestamos[i].getCodigoLibro().equals(codigoLibro) && prestamos[i].getFechaDevolucionReal() == null){
                 throw new LibroNoDisponibleException("ESTE LIBRO NO ESTA DISPONIBLE");
             }
         }
@@ -55,7 +55,7 @@ public class GestorBiblioteca extends Excepciones {
 
     public boolean devolverLibro(String codigoLibro, LocalDate fechaDevolucion) throws PrestamoInvalidoException {
         for(int i=0; i<prestamos.length;i++){
-            if(prestamos[i] != null && prestamos[i].getCodigoLibro().matches(codigoLibro) && prestamos[i].getFechaDevolucionReal()==null){
+            if(prestamos[i] != null && prestamos[i].getCodigoLibro().equals(codigoLibro) && prestamos[i].getFechaDevolucionReal() == null){
 
                 if(fechaDevolucion.isBefore(prestamos[i].getFechaPrestamo())){
                     throw new PrestamoInvalidoException("LA FECHA DE DEVOLUCION NO PUEDE SER ANTERIOR A LA DEL PRESTAMO");
@@ -66,14 +66,7 @@ public class GestorBiblioteca extends Excepciones {
                 if (fechaDevolucion.isAfter(prestamos[i].getFechaDevolucionPrevista())) {
                     long retraso = ChronoUnit.DAYS.between(prestamos[i].getFechaDevolucionPrevista(),fechaDevolucion);
                     prestamos[i].getSocio().sancionar((int)retraso);
-
-                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    String fechaFin = prestamos[i].getSocio().getFechaFinSancion().format(fmt);
-
-                    System.out.println("Devolución registrada con " + retraso + " días de retraso");
-                    System.out.println("Usuario sancionado por " + retraso + " días (hasta el " + fechaFin + ")");
                 }
-
                 return true;
             }
         }
@@ -98,5 +91,18 @@ public class GestorBiblioteca extends Excepciones {
 
     public String toString(){
         return " PRESTAMOS"+this.getPrestamos()+"Usuarios"+this.getUsuarios();
+    }
+
+    public void actualizarSanciones() {
+        LocalDate hoy = LocalDate.now();
+        int cont = 0;
+        for(int i=0; i<numeroUsuarios; i++) {
+            Usuario u = usuarios[i];
+            if(u.estaSancionado() && u.getFechaFinSancion() != null && u.getFechaFinSancion().isBefore(hoy)) {
+                u.levantarSancion();
+                cont++;
+            }
+        }
+        System.out.println("Se han levantado las sanciones a " + cont + " usuarios.");
     }
 }
