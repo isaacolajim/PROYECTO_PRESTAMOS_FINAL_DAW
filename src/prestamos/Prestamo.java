@@ -14,16 +14,16 @@ public class Prestamo extends Excepciones {
     public Prestamo(String codigoLibro, Usuario socio, String tituloLibro,
                     LocalDate fechaPrestamo)throws PrestamoInvalidoException{
 
-        if(codigoLibro==null||!codigoLibro.matches("^LIB\\d{4}$")){
+        if(codigoLibro==null||!codigoLibro.matches("^[A-Z]{3}\\d{4}$")){
             throw  new PrestamoInvalidoException("EL FORMATO DEL CODIGO DEBE SER LIB0001 ");
         }
-        if(tituloLibro==null){
+        if(tituloLibro==null||tituloLibro.isEmpty()){
             throw new PrestamoInvalidoException("NO HAS INTRODUCIDO EL TITULO DEL LIBRO");
         }
         if(socio==null){
             throw new PrestamoInvalidoException("NO HAS INTRODUCIDO NINGUN USUARIO");
         }
-        if(fechaPrestamo==null){
+        if(fechaPrestamo==null||fechaPrestamo.isAfter(LocalDate.now())){
             throw new PrestamoInvalidoException("NO HAS INTRODUCIDO LA FECHA DE PRESTAMO");
         }
         this.codigoLibro=codigoLibro;
@@ -59,7 +59,7 @@ public class Prestamo extends Excepciones {
     }
 
     public void registrarDevolucion(LocalDate devolucion)throws PrestamoInvalidoException{
-        if(devolucion==null||devolucion.isBefore(LocalDate.now())){
+        if(devolucion==null||devolucion.isBefore(this.fechaPrestamo)){
             throw new PrestamoInvalidoException("NO ES POSIBLE REALIZAR " +
                     "UN PRESTAMO EN ESTAS FECHAS");
         }
@@ -67,21 +67,42 @@ public class Prestamo extends Excepciones {
     }
 
     public int calcularDiasRetraso(){
-        if(fechaDevolucionReal.isAfter(fechaDevolucionPrevista)){
-            long retraso = ChronoUnit.DAYS.between(fechaDevolucionReal,fechaDevolucionPrevista);
-            return (int)retraso;
+        if(fechaDevolucionReal!=null){
+            if(fechaDevolucionReal.isAfter(fechaDevolucionPrevista)){
+                long retraso = ChronoUnit.DAYS.between(fechaDevolucionPrevista,fechaDevolucionReal);
+                return (int)retraso;
+            }
+            else{
+                return 0;
+            }
         }
         else{
-            return 0;
+            long retraso = ChronoUnit.DAYS.between(fechaPrestamo,LocalDate.now());
+            if(retraso>0){
+                return (int)retraso;
+            }
+            else{
+                return 0;
+            }
         }
     }
 
     public boolean estaRetrasado(){
-        if(fechaDevolucionReal.isAfter(fechaDevolucionPrevista)){
-            return true;
+        if(fechaDevolucionReal!=null){
+            if(fechaDevolucionReal.isAfter(fechaDevolucionPrevista)){
+                return true;
+            }
+            else{
+                return false;
+            }
         }
         else{
-            return false;
+            if(LocalDate.now().isAfter(fechaDevolucionPrevista)){
+                return true;
+            }
+            else{
+                return false;
+            }
         }
     }
     @Override

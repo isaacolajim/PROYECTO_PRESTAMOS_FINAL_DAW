@@ -76,13 +76,13 @@ public class MainPrestamos {
                         String codigolibro = in.nextLine();
                         System.out.println("Fecha devolucion: ");
                         LocalDate fechadevolucion = LocalDate.parse(in.nextLine(), formatoFecha);
-                        boolean devolucion = gestor.devolverLibro(codigolibro,fechadevolucion);
-                        if(devolucion){
-                            System.out.println("Devolucion registrada");
-                        }
-                        //else if(fechadevolucion.isAfter()){
 
-                        //}
+                        boolean devolucion = gestor.devolverLibro(codigolibro,fechadevolucion);
+
+                        if(!devolucion){
+                            System.out.println("El libro no esta prestado o el codigo no existe");
+                        }
+
                     }
                     catch (DateTimeParseException e) {
                         System.out.println("Error: Formato de fecha incorrecto. Usa dd/mm/aaaa");
@@ -102,29 +102,28 @@ public class MainPrestamos {
                     }
                     break;
                 case 5:
-                    Prestamo[] lista = { gestor.getPrestamos() };
+                    Prestamo[] lista = gestor.getPrestamos();
                     boolean prestamos = false;
                     for(int i = 0; i < lista.length; i++){
-                        Prestamo p = lista[i];
-                        if(p != null && p.getFechaDevolucionReal() == null){
+                        if(lista[i] != null && lista[i].getFechaDevolucionReal() == null){
+                            System.out.println(lista[i].toString());
                             prestamos = true;
                         }
                     }
-                    if(!prestamos){
+                    if(prestamos==false){
                         System.out.println("no hay prestamos");
                     }
                         break;
                 case 6:
-                    Usuario[] usuario = {gestor.getUsuarios()};
+                    Usuario[] usuario = gestor.getUsuarios();
                     boolean sancion = false;
                     for(int i=0; i< usuario.length;i++){
-                        Usuario u= usuario[i];
-                        if(u!=null && u.estaSancionado()){
-                            System.out.println(u);
+                        if(usuario[i] != null && usuario[i].estaSancionado()){
+                            System.out.println(usuario[i].toString());
                             sancion =true;
                         }
                     }
-                    if(!sancion){
+                    if(sancion==false){
                         System.out.println("no hay usuarios sancionados");
                     }
                     break;

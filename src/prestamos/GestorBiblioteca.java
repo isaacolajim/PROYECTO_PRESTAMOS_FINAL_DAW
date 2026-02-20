@@ -43,13 +43,18 @@ public class GestorBiblioteca extends Excepciones {
         if(socio.estaSancionado()){
             throw  new UsuarioSancionadoException("ESTE USUARIO ESTA SANCIONADO");
         }
-
         for(int i = 0; i<numeroPrestamos; i++){
             if(prestamos[i] != null && prestamos[i].getCodigoLibro().equals(codigoLibro) && prestamos[i].getFechaDevolucionReal() == null){
                 throw new LibroNoDisponibleException("ESTE LIBRO NO ESTA DISPONIBLE");
             }
         }
         Prestamo prestamo= new Prestamo (codigoLibro,socio,tituloLibro, fechaPrestamo);
+        if (numeroPrestamos < prestamos.length) {
+            prestamos[numeroPrestamos] = prestamo;
+            numeroPrestamos++;
+        } else {
+            throw new PrestamoInvalidoException("NO CABEN MAS PRESTAMOS EN LA BIBLIOTECA");
+        }
         return prestamo;
     }
 
@@ -66,6 +71,14 @@ public class GestorBiblioteca extends Excepciones {
                 if (fechaDevolucion.isAfter(prestamos[i].getFechaDevolucionPrevista())) {
                     long retraso = ChronoUnit.DAYS.between(prestamos[i].getFechaDevolucionPrevista(),fechaDevolucion);
                     prestamos[i].getSocio().sancionar((int)retraso);
+
+                    DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    String fechaFin = prestamos[i].getSocio().getFechaFinSancion().format(formato);
+                    System.out.println("Devolución registrada con " + retraso + " días de retraso");
+                    System.out.println("Usuario sancionado por " + retraso + " días ");
+                }
+                else{
+                    System.out.println("LIBRO DEVUELTO EXITOSAMENTE");
                 }
                 return true;
             }
@@ -81,12 +94,12 @@ public class GestorBiblioteca extends Excepciones {
         return null;
     }
 
-    public Prestamo getPrestamos() {
-        return prestamos[numeroPrestamos];
+    public Prestamo[] getPrestamos() {
+        return prestamos;
     }
 
-    public Usuario getUsuarios() {
-        return usuarios[numeroUsuarios];
+    public Usuario[] getUsuarios() {
+        return usuarios;
     }
 
     public String toString(){

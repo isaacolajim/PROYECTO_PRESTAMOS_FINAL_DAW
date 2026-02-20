@@ -34,9 +34,9 @@ public class Usuario extends Excepciones {
         return numeroSocio;
     }
 
-    public void sancionar(int dias){
-        this.sancionado =true;
-        this.diasSancion +=dias;
+    public void sancionar(int dias) {
+        this.sancionado = true;
+        this.fechaFinSancion = LocalDate.now().plusDays(dias);
     }
 
     public void levantarSancion(){
@@ -57,4 +57,7 @@ public class Usuario extends Excepciones {
                 " Fecha de registro: "+this.fechaRegistro;
     }
 
+    public LocalDate getFechaFinSancion() {
+        return fechaFinSancion;
+    }
 }
