@@ -6,7 +6,7 @@ public class Usuario extends Excepciones {
     private String nombre;
     private String email;
     private String numeroSocio;
-    private LocalDate fechaRegistro;
+    private LocalDate fechaEntrada;
     private boolean sancionado;
     private int diasSancion;
     private LocalDate fechaFinSancion;
